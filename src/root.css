@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Lato';
+  font-weight: 400;
+  src: url('./public/fonts/lato/Lato-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Lato';
+  font-weight: 700;
+  src: url('./public/fonts/lato/Lato-Bold.ttf');
+}
+
+body {
+  @apply font-sans;
+}
