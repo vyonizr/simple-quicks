@@ -3,7 +3,13 @@ module.exports = {
   content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
   theme: {
     extend: {
-    fontFamily: {
+      colors: {
+        primaryEmperor: '#4F4F4F',
+        primaryGray: '#828282',
+        primaryMineshaft: '#333333',
+        primaryConcrete: '#F2F2F2'
+      },
+      fontFamily: {
         sans: [
           'Lato',
           'ui-sans-serif',
@@ -21,6 +27,16 @@ module.exports = {
           '"Segoe UI Symbol"',
           '"Noto Color Emoji"',
         ],
+      },
+      gridTemplateColumns: (theme) => {
+        const spacing = theme("spacing");
+
+        return Object.keys(spacing).reduce((accumulator, spacingKey) => {
+          return {
+            ...accumulator,
+            [`fill-${spacingKey}`]: `repeat(auto-fill, minmax(${spacing[spacingKey]}, 1fr))`,
+          };
+        }, {});
       }
     }
   },

@@ -4,8 +4,10 @@ specifiers:
   '@solidjs/meta': ^0.28.2
   '@solidjs/router': ^0.7.0
   autoprefixer: ^10.4.13
+  date-fns: ^2.29.3
   postcss: ^8.4.21
   solid-js: ^1.6.9
+  solid-outside-click-handler: ^0.1.0
   solid-start: ^0.2.19
   solid-start-node: ^0.2.19
   tailwindcss: ^3.2.4
@@ -16,7 +18,9 @@ specifiers:
 dependencies:
   '@solidjs/meta': 0.28.2_solid-js@1.6.10
   '@solidjs/router': 0.7.0_solid-js@1.6.10
+  date-fns: 2.29.3
   solid-js: 1.6.10
+  solid-outside-click-handler: 0.1.0_solid-js@1.6.10
   solid-start: 0.2.19_xkldvgorozr2rd64n7towncbfe
   undici: 5.16.0
 
@@ -1624,6 +1628,11 @@ packages:
   /csstype/3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
 
+  /date-fns/2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
+    dev: false
+
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
     peerDependencies:
@@ -2731,6 +2740,14 @@ packages:
     resolution: {integrity: sha512-Sf0e6PQCEFkFtbPq0L+93Ua81YQOefBEbvDJ0YXT92b6Lzw0k7UvzSd2l1BbYM+yzE3UmepU1tyMDc/3nIByjA==}
     dependencies:
       csstype: 3.1.1
+
+  /solid-outside-click-handler/0.1.0_solid-js@1.6.10:
+    resolution: {integrity: sha512-gvXZuJqCuVTCuao1pqFHFVW20/nDw2rxk4ieSfS57sOfwChx3v3l+hyL/pdHKqdPbCWvPcvAvJP2wvJEoWru5g==}
+    peerDependencies:
+      solid-js: ^1.4.7
+    dependencies:
+      solid-js: 1.6.10
+    dev: false
 
   /solid-refresh/0.4.3_solid-js@1.6.10:
     resolution: {integrity: sha512-7+4/gYsVi0BlM4PzT1PU1TB5nW3Hv8FWuB+Kw/ofWui7KQkWBf+dVZOrReQYHEmLCzytHUa2JysUXgzVALJmSw==}
