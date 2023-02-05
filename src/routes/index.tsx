@@ -1,8 +1,7 @@
 import { createSignal, Show, For, createEffect } from 'solid-js'
 import CircularButton from '../components/CircularButton'
 import InboxDialog from "../components/InboxDialog";
-import { OutsideClickHandler } from 'solid-outside-click-handler'
-import { format } from "date-fns";
+import { OutsideClickHandler } from "solid-outside-click-handler";
 
 type TMenuButton = {
   name: string

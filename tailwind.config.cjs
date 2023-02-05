@@ -8,7 +8,8 @@ module.exports = {
         primaryEmperor: '#4F4F4F',
         primaryGray: '#828282',
         primaryMineshaft: '#333333',
-        primaryConcrete: '#F2F2F2'
+        primaryConcrete: '#F2F2F2',
+        primaryAlto: '#E0E0E0'
       },
       fontFamily: {
         sans: [
