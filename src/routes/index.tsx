@@ -57,7 +57,7 @@ export default function Home() {
     <section>
       <div class="fixed bottom-9 right-9 flex flex-col items-end">
         <Show when={activeMenu()?.name === "Inbox"}>
-          <InboxDialog />
+          <InboxDialog onClose={closeMenu} />
         </Show>
         {/* <OutsideClickHandler onOutsideClick={closeMenu}> */}
         <ul class="flex flex-row-reverse space-x-7 space-x-reverse">

@@ -11,8 +11,15 @@ export type TUser = {
 
 export type TInbox = {
   subject: string;
-  participants: TUser[];
+  participants: TUser[] | [];
   latest_message: TMessage;
 };
 
 export type TConversationHistory = TMessage[];
+
+export type TBubbleColor = {
+  [key: string]: {
+    text: string;
+    background: string;
+  };
+};

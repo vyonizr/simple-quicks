@@ -1,16 +1,28 @@
-import { createSignal, Show, For } from "solid-js";
+import { createSignal, Show, For, createMemo } from "solid-js";
 import { format, formatRelative } from "date-fns";
 import { OutsideClickHandler } from "solid-outside-click-handler";
-import { DUMMY_INBOX, DUMMY_CONVERSATION_HISTORY } from "./dummy";
-import { TInbox } from "./types";
+import {
+  DUMMY_INBOX,
+  DUMMY_GROUP_CONVERSATION_HISTORY,
+  DUMMY_PERSONAL_CONVERSATION_HISTORY,
+} from "./dummy";
+import { TInbox, TBubbleColor } from "./types";
 import { searchBlack } from "~/common/icons";
+import {
+  GROUP_CHAT_BUBBLE_COLORS,
+  PERSONAL_CHAT_BUBBLE_COLORS,
+} from "~/common/colors";
 
 const CURRENT_USER = "Claren";
 
-export default function InboxDialog() {
+type InboxDialogProps = {
+  onClose: () => void;
+};
+
+export default function InboxDialog(props: InboxDialogProps) {
   // const [inboxDetail, setInboxDetail] = createSignal<TInbox | null>(null);
   const [inboxDetail, setInboxDetail] = createSignal<TInbox | null>(
-    DUMMY_INBOX[0]
+    DUMMY_INBOX[4]
   );
   const [actionIndex, setActionIndex] = createSignal<number | null>(null);
   const openChatAction = (i: number) => {
@@ -20,10 +32,38 @@ export default function InboxDialog() {
       setActionIndex(i);
     }
   };
+
+  const bubbleColors = createMemo(() => {
+    const colors: TBubbleColor = {};
+    if (inboxDetail()) {
+      inboxDetail()?.participants.forEach((participant, i) => {
+        colors[participant.name] =
+          GROUP_CHAT_BUBBLE_COLORS[i % GROUP_CHAT_BUBBLE_COLORS.length];
+      });
+    }
+
+    return colors;
+  });
+
+  const numberOfParticipants = createMemo(() => {
+    const getInboxDetail = inboxDetail();
+    if (getInboxDetail) {
+      return getInboxDetail.participants.length;
+    }
+
+    return 0;
+  });
+
+  const conversationHistory = createMemo(() =>
+    numberOfParticipants() > 2
+      ? DUMMY_GROUP_CONVERSATION_HISTORY
+      : DUMMY_PERSONAL_CONVERSATION_HISTORY
+  );
+
   return (
     <>
       <Show when={inboxDetail() === null}>
-        <div class="mb-4 grid h-[45.875rem] w-[45.875rem] grid-rows-[2.125rem_1fr] rounded-md bg-white py-5 px-[1.8125rem]">
+        <div class="mb-4 grid h-[45.875rem] w-[45.875rem] grid-rows-[2.125rem_1fr] rounded-md bg-white py-[24px] px-[32px]">
           <label
             for="search"
             class="relative block text-gray-400 focus-within:text-gray-600"
@@ -41,12 +81,18 @@ export default function InboxDialog() {
           </label>
           <ul>
             <For each={DUMMY_INBOX}>
-              {(inbox) => (
+              {(inbox, i) => (
                 <li
                   class={
-                    "grid max-w-full cursor-pointer grid-cols-[3rem_1fr_0.75rem] items-center border-t-2 border-primaryMineshaft py-6 first:border-t-0 hover:bg-primaryAlto"
+                    "grid max-w-full cursor-pointer grid-cols-[3rem_1fr_0.75rem] items-center border-t-2 border-primaryMineshaft py-[22px] first:border-t-0 hover:bg-primaryAlto"
                   }
-                  onClick={() => setInboxDetail(DUMMY_INBOX[0])}
+                  onClick={() =>
+                    setInboxDetail(
+                      inbox.participants.length > 2
+                        ? DUMMY_INBOX[0]
+                        : DUMMY_INBOX[DUMMY_INBOX.length - 1]
+                    )
+                  }
                 >
                   <div>Icon</div>
                   <div>
@@ -80,26 +126,30 @@ export default function InboxDialog() {
           </ul>
         </div>
       </Show>
-      <Show when={inboxDetail() !== null}>
-        <div class="mb-4 grid h-[45.875rem] w-[45.875rem] grid-rows-[4.75rem_1fr_2.5rem] rounded-md bg-white py-5">
-          <div class="grid grid-cols-[1rem_1fr_1rem] gap-x-4 border-b-2 border-[#BDBDBD] px-[1.8125rem]">
-            <button>
+      <Show when={inboxDetail() !== null && bubbleColors() !== null}>
+        <div class="mb-4 grid h-[45.875rem] w-[45.875rem] grid-rows-[4.75rem_1fr_2.5rem] rounded-md bg-white py-[24px]">
+          <div class="grid grid-cols-[1rem_1fr_1rem] gap-x-4 border-b-2 border-[#BDBDBD] px-[32px]">
+            <button onClick={() => setInboxDetail(null)}>
               <img src={searchBlack} alt="back icon" />
             </button>
-            <div>
+            <div class="flex flex-col justify-center">
               <p class="font-bold text-primaryCornflowerBlue">
-                I-589 - AMARKHIL, Obaidullah [Affirmative Filing with ZHN]
+                {inboxDetail()?.subject}
               </p>
-              <small>{inboxDetail()?.participants.length} participants</small>
+              <Show when={numberOfParticipants() > 2}>
+                <small>{inboxDetail()?.participants.length} participants</small>
+              </Show>
             </div>
-            <div>X</div>
+            <button onClick={props.onClose}>
+              <img src={searchBlack} alt="exit icon" />
+            </button>
           </div>
           <div
             class="overflow-y-scroll px-4"
             style={{ height: "calc(100% - 1rem)" }}
           >
             <ul class="flex flex-col-reverse justify-end">
-              <For each={DUMMY_CONVERSATION_HISTORY}>
+              <For each={conversationHistory()}>
                 {(message, i) => (
                   <>
                     <li
@@ -114,7 +164,15 @@ export default function InboxDialog() {
                           message.user.name === CURRENT_USER
                             ? "text-right"
                             : "text-left"
-                        } font-bold text-[#9B51E0]`}
+                        } font-bold`}
+                        style={{
+                          color:
+                            numberOfParticipants() > 2
+                              ? bubbleColors()[message.user.name].text
+                              : message.user.name === CURRENT_USER
+                              ? PERSONAL_CHAT_BUBBLE_COLORS.self.text
+                              : PERSONAL_CHAT_BUBBLE_COLORS.interlocutor.text,
+                        }}
                       >
                         {message.user.name === CURRENT_USER
                           ? "You"
@@ -154,7 +212,18 @@ export default function InboxDialog() {
                             </OutsideClickHandler>
                           </Show>
                         </div>
-                        <div class="rounded-md bg-[#EEDCFF] p-2.5">
+                        <div
+                          class="rounded-md p-2.5"
+                          style={{
+                            "background-color":
+                              numberOfParticipants() > 2
+                                ? bubbleColors()[message.user.name].background
+                                : message.user.name === CURRENT_USER
+                                ? PERSONAL_CHAT_BUBBLE_COLORS.self.background
+                                : PERSONAL_CHAT_BUBBLE_COLORS.interlocutor
+                                    .background,
+                          }}
+                        >
                           <p>{message.content}</p>
                           <p>
                             {message.date
@@ -166,9 +235,9 @@ export default function InboxDialog() {
                     </li>
                     <Show
                       when={
-                        DUMMY_CONVERSATION_HISTORY[i()].is_unread &&
-                        i() < DUMMY_CONVERSATION_HISTORY.length - 1 &&
-                        !DUMMY_CONVERSATION_HISTORY[i() + 1].is_unread
+                        conversationHistory()[i()].is_unread &&
+                        i() < conversationHistory().length - 1 &&
+                        !conversationHistory()[i() + 1].is_unread
                       }
                     >
                       <div class="mt-3 grid  grid-cols-[1fr_max-content_1fr] items-center">
@@ -181,22 +250,24 @@ export default function InboxDialog() {
                     </Show>
                     <Show
                       when={
-                        (i() < DUMMY_CONVERSATION_HISTORY.length - 1 &&
+                        (i() < DUMMY_GROUP_CONVERSATION_HISTORY.length - 1 &&
                           formatRelative(
-                            DUMMY_CONVERSATION_HISTORY[i()].date * 1000,
+                            DUMMY_GROUP_CONVERSATION_HISTORY[i()].date * 1000,
                             Date.now()
                           ) !==
                             formatRelative(
-                              DUMMY_CONVERSATION_HISTORY[i() + 1].date * 1000,
+                              DUMMY_GROUP_CONVERSATION_HISTORY[i() + 1].date *
+                                1000,
                               Date.now()
                             )) ||
-                        (i() === DUMMY_CONVERSATION_HISTORY.length - 1 &&
+                        (i() === DUMMY_GROUP_CONVERSATION_HISTORY.length - 1 &&
                           formatRelative(
-                            DUMMY_CONVERSATION_HISTORY[i()].date * 1000,
+                            DUMMY_GROUP_CONVERSATION_HISTORY[i()].date * 1000,
                             Date.now()
                           ) !==
                             formatRelative(
-                              DUMMY_CONVERSATION_HISTORY[i() - 1].date * 1000,
+                              DUMMY_GROUP_CONVERSATION_HISTORY[i() - 1].date *
+                                1000,
                               Date.now()
                             ))
                       }
@@ -205,7 +276,7 @@ export default function InboxDialog() {
                         <div class="w-full border-t-2 border-[#4F4F4F]" />
                         <p class="px-4 text-lg font-bold text-[#4F4F4F]">
                           {format(
-                            DUMMY_CONVERSATION_HISTORY[i()].date * 1000,
+                            DUMMY_GROUP_CONVERSATION_HISTORY[i()].date * 1000,
                             "MMMM dd y"
                           )}
                         </p>
@@ -222,7 +293,7 @@ export default function InboxDialog() {
               <input
                 name="text"
                 type="text"
-                class="h-full w-full rounded-md border-2 border-[#828282] px-4"
+                class="h-full w-full rounded-md border-2 border-[#828282] px-[32px]"
                 placeholder="Type a new message"
               ></input>
             </label>

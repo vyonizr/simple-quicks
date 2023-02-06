@@ -2,6 +2,28 @@ import { TInbox, TConversationHistory } from "./types";
 
 export const DUMMY_INBOX: TInbox[] = [
   {
+    subject: "I-589 - AMARKHIL, Obaidullah [Affirmative Filing with ZHN]",
+    participants: [
+      {
+        name: "Obaidullah Amarkhil",
+      },
+      {
+        name: "Mary Hilda",
+      },
+      {
+        name: "Claren",
+      },
+    ],
+    latest_message: {
+      user: {
+        name: "Obaidullah Amarkhil",
+      },
+      content: "Morning. I'll try to do them. Thanks",
+      is_unread: true,
+      date: 1623241950,
+    },
+  },
+  {
     subject: "109220-Naturalization",
     participants: [
       {
@@ -90,7 +112,7 @@ export const DUMMY_INBOX: TInbox[] = [
   },
 ];
 
-export const DUMMY_CONVERSATION_HISTORY: TConversationHistory = [
+export const DUMMY_GROUP_CONVERSATION_HISTORY: TConversationHistory = [
   {
     user: { name: "Obaidullah Amarkhil" },
     content: "Morning. I'll try to do them. Thanks",
@@ -122,5 +144,21 @@ export const DUMMY_CONVERSATION_HISTORY: TConversationHistory = [
     content: "No worries. It will be completed ASAP. I've asked him yesterday.",
     is_unread: false,
     date: 1623155520,
+  },
+];
+
+export const DUMMY_PERSONAL_CONVERSATION_HISTORY: TConversationHistory = [
+  {
+    user: { name: "Claren" },
+    content: "Hi, I need help with something can you help me ?",
+    is_unread: false,
+    date: 1675600340,
+  },
+  {
+    user: { name: "FastVisa Support" },
+    content:
+      "Hey there. Welcome to your inbox! Contact us for more information and help about anything! We’ll send you a response as soon as possible.",
+    is_unread: false,
+    date: 1675600320,
   },
 ];
