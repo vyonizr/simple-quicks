@@ -1,5 +1,6 @@
 import { createSignal, Show, For } from "solid-js";
 import { format, formatRelative } from "date-fns";
+import { OutsideClickHandler } from "solid-outside-click-handler";
 import { DUMMY_INBOX, DUMMY_CONVERSATION_HISTORY } from "./dummy";
 import { TInbox } from "./types";
 import { searchBlack } from "~/common/icons";
@@ -11,6 +12,14 @@ export default function InboxDialog() {
   const [inboxDetail, setInboxDetail] = createSignal<TInbox | null>(
     DUMMY_INBOX[0]
   );
+  const [actionIndex, setActionIndex] = createSignal<number | null>(null);
+  const openChatAction = (i: number) => {
+    if (i === actionIndex()) {
+      setActionIndex(null);
+    } else {
+      setActionIndex(i);
+    }
+  };
   return (
     <>
       <Show when={inboxDetail() === null}>
@@ -85,7 +94,10 @@ export default function InboxDialog() {
             </div>
             <div>X</div>
           </div>
-          <div class="overflow-y-scroll px-4" style={{height: 'calc(100% - 1rem)'}}>
+          <div
+            class="overflow-y-scroll px-4"
+            style={{ height: "calc(100% - 1rem)" }}
+          >
             <ul class="flex flex-col-reverse justify-end">
               <For each={DUMMY_CONVERSATION_HISTORY}>
                 {(message, i) => (
@@ -100,8 +112,8 @@ export default function InboxDialog() {
                       <p
                         class={`${
                           message.user.name === CURRENT_USER
-                            ? "self-end"
-                            : "self-start"
+                            ? "text-right"
+                            : "text-left"
                         } font-bold text-[#9B51E0]`}
                       >
                         {message.user.name === CURRENT_USER
@@ -114,9 +126,34 @@ export default function InboxDialog() {
                           "flex-row-reverse"
                         }`}
                       >
-                        <button>
-                          <img src={searchBlack} alt="action icon" />
-                        </button>
+                        <div class="relative">
+                          <button onClick={() => openChatAction(i())}>
+                            <img src={searchBlack} alt="action icon" />
+                          </button>
+                          <Show when={actionIndex() === i()}>
+                            <OutsideClickHandler
+                              onOutsideClick={() => setActionIndex(null)}
+                            >
+                              <ul
+                                class={`absolute z-10 w-32 rounded-md border-2 border-[#BDBDBD] bg-white ${
+                                  message.user.name !== CURRENT_USER &&
+                                  "right-0"
+                                }`}
+                              >
+                                <li>
+                                  <button class="h-12 w-full border-b-2 border-[#BDBDBD] px-[1.125rem] text-left text-[#2F80ED]">
+                                    Edit
+                                  </button>
+                                </li>
+                                <li>
+                                  <button class="h-12 w-full px-[1.125rem] text-left text-[#EB5757]">
+                                    Delete
+                                  </button>
+                                </li>
+                              </ul>
+                            </OutsideClickHandler>
+                          </Show>
+                        </div>
                         <div class="rounded-md bg-[#EEDCFF] p-2.5">
                           <p>{message.content}</p>
                           <p>
@@ -180,11 +217,18 @@ export default function InboxDialog() {
               </For>
             </ul>
           </div>
-          <form class="px-4 w-100 grid grid-cols-[1fr_4.75rem] gap-x-4">
+          <form class="w-100 grid grid-cols-[1fr_4.75rem] gap-x-4 px-4">
             <label for="text">
-              <input name='text' type="text" class="w-full h-full px-4 border-2 border-[#828282] rounded-md" placeholder="Type a new message"></input>
+              <input
+                name="text"
+                type="text"
+                class="h-full w-full rounded-md border-2 border-[#828282] px-4"
+                placeholder="Type a new message"
+              ></input>
             </label>
-            <button class="bg-[#2F80ED] text-white h-12 px-[1.375rem] rounded-md">Send</button>
+            <button class="h-12 rounded-md bg-[#2F80ED] px-[1.375rem] text-white">
+              Send
+            </button>
           </form>
         </div>
       </Show>
