@@ -7,7 +7,13 @@ import {
   DUMMY_PERSONAL_CONVERSATION_HISTORY,
 } from "./dummy";
 import { TInbox, TBubbleColor } from "./types";
-import { searchBlack } from "~/common/icons";
+import {
+  arrowBack,
+  closeIcon,
+  moreHorizontalIcon,
+  personIcon,
+  personWhiteIcon,
+} from "~/common/icons";
 import {
   GROUP_CHAT_BUBBLE_COLORS,
   PERSONAL_CHAT_BUBBLE_COLORS,
@@ -20,10 +26,10 @@ type InboxDialogProps = {
 };
 
 export default function InboxDialog(props: InboxDialogProps) {
-  // const [inboxDetail, setInboxDetail] = createSignal<TInbox | null>(null);
-  const [inboxDetail, setInboxDetail] = createSignal<TInbox | null>(
-    DUMMY_INBOX[4]
-  );
+  const [inboxDetail, setInboxDetail] = createSignal<TInbox | null>(null);
+  // const [inboxDetail, setInboxDetail] = createSignal<TInbox | null>(
+  //   DUMMY_INBOX[0]
+  // );
   const [actionIndex, setActionIndex] = createSignal<number | null>(null);
   const openChatAction = (i: number) => {
     if (i === actionIndex()) {
@@ -73,64 +79,84 @@ export default function InboxDialog(props: InboxDialogProps) {
               placeholder="Search"
               class="form-input w-full rounded-md border-2 border-primaryEmperor px-[3.75rem] py-1"
             />
-            <img
-              src="/assets/icons/search_24px_black.svg"
-              class="pointer-events-none absolute top-1/2 right-4 h-3 w-3 transform"
-              alt="search icon"
-            />
+            <span class="absolute inset-y-0 right-0 flex items-center pr-10">
+              <img
+                src="/assets/icons/search_24px_black.svg"
+                class="pointer-events-none"
+                alt="search icon"
+              />
+            </span>
           </label>
-          <ul>
-            <For each={DUMMY_INBOX}>
-              {(inbox, i) => (
-                <li
-                  class={
-                    "grid max-w-full cursor-pointer grid-cols-[3rem_1fr_0.75rem] items-center border-t-2 border-primaryMineshaft py-[22px] first:border-t-0 hover:bg-primaryAlto"
-                  }
-                  onClick={() =>
-                    setInboxDetail(
-                      inbox.participants.length > 2
-                        ? DUMMY_INBOX[0]
-                        : DUMMY_INBOX[DUMMY_INBOX.length - 1]
-                    )
-                  }
-                >
-                  <div>Icon</div>
-                  <div>
-                    <div class="grid grid-cols-[26rem_1fr]">
-                      <span class="font-bold text-primaryCornflowerBlue">
-                        {inbox.subject}
-                      </span>
-                      <span class="justify-self-end">
-                        {format(
-                          inbox.latest_message.date * 1000,
-                          "dd/MM/yyyy HH:mm"
-                        )}
-                      </span>
+          <div class="overflow-y-scroll">
+            <ul>
+              <For each={DUMMY_INBOX}>
+                {(inbox, i) => (
+                  <li
+                    class={
+                      "grid max-w-full cursor-pointer grid-cols-[3rem_1fr_0.75rem] items-center gap-x-2 border-t-2 border-primaryMineshaft py-[22px] first:border-t-0"
+                    }
+                    onClick={() =>
+                      setInboxDetail(
+                        inbox.participants.length > 2
+                          ? DUMMY_INBOX[0]
+                          : DUMMY_INBOX[DUMMY_INBOX.length - 1]
+                      )
+                    }
+                  >
+                    <div class="relative mt-2 h-max w-[3.1875rem] self-start">
+                      <Show when={inbox.participants.length > 2}>
+                        <div class="absolute left-1/4 z-10 flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-primaryCornflowerBlue">
+                          <img src={personWhiteIcon} alt="person icon" />
+                        </div>
+                        <div class="absolute flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-[#E0E0E0]">
+                          <img src={personIcon} alt="person icon" />
+                        </div>
+                      </Show>
+                      <Show when={inbox.participants.length === 2}>
+                        <div class="flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-primaryCornflowerBlue">
+                          <span class="uppercase text-white">
+                            {
+                              inbox.participants[inbox.participants.length - 1]
+                                .name[0]
+                            }
+                          </span>
+                        </div>
+                      </Show>
                     </div>
-                    <Show when={inbox.participants.length > 2}>
-                      <p class="font-bold">{`${inbox.latest_message.user.name} :`}</p>
-                    </Show>
                     <div>
-                      <p>{inbox.latest_message.content}</p>
+                      <div class="grid grid-cols-[26rem_1fr]">
+                        <span class="font-bold text-primaryCornflowerBlue">
+                          {inbox.subject}
+                        </span>
+                        <span class="justify-self-end">
+                          {format(
+                            inbox.latest_message.date * 1000,
+                            "dd/MM/yyyy HH:mm"
+                          )}
+                        </span>
+                      </div>
+                      <Show when={inbox.participants.length > 2}>
+                        <p class="font-bold">{`${inbox.latest_message.user.name} :`}</p>
+                      </Show>
+                      <div>
+                        <p>{inbox.latest_message.content}</p>
+                      </div>
                     </div>
-                  </div>
-                  <Show when={inbox.latest_message.is_unread}>
-                    <img
-                      src="/assets/icons/search_24px_black.svg"
-                      alt="search icon"
-                    />
-                  </Show>
-                </li>
-              )}
-            </For>
-          </ul>
+                    <Show when={inbox.latest_message.is_unread}>
+                      <div class="h-3 w-3 rounded-full bg-[#EB5757]" />
+                    </Show>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
         </div>
       </Show>
       <Show when={inboxDetail() !== null && bubbleColors() !== null}>
         <div class="mb-4 grid h-[45.875rem] w-[45.875rem] grid-rows-[4.75rem_1fr_2.5rem] rounded-md bg-white py-[24px]">
           <div class="grid grid-cols-[1rem_1fr_1rem] gap-x-4 border-b-2 border-[#BDBDBD] px-[32px]">
             <button onClick={() => setInboxDetail(null)}>
-              <img src={searchBlack} alt="back icon" />
+              <img src={arrowBack} alt="back icon" />
             </button>
             <div class="flex flex-col justify-center">
               <p class="font-bold text-primaryCornflowerBlue">
@@ -141,7 +167,7 @@ export default function InboxDialog(props: InboxDialogProps) {
               </Show>
             </div>
             <button onClick={props.onClose}>
-              <img src={searchBlack} alt="exit icon" />
+              <img src={closeIcon} alt="exit icon" />
             </button>
           </div>
           <div
@@ -153,7 +179,7 @@ export default function InboxDialog(props: InboxDialogProps) {
                 {(message, i) => (
                   <>
                     <li
-                      class="mt-3 max-w-[70%] last:mt-0"
+                      class="mt-3 last:mt-0"
                       style={{
                         "align-self":
                           message.user.name === CURRENT_USER ? "end" : "start",
@@ -180,20 +206,28 @@ export default function InboxDialog(props: InboxDialogProps) {
                       </p>
                       <div
                         class={`flex items-start ${
-                          message.user.name !== CURRENT_USER &&
-                          "flex-row-reverse"
+                          message.user.name !== CURRENT_USER
+                            ? "flex-row-reverse"
+                            : "flex-row"
                         }`}
                       >
-                        <div class="relative">
-                          <button onClick={() => openChatAction(i())}>
-                            <img src={searchBlack} alt="action icon" />
+                        <div class="relative flex items-start">
+                          <button
+                            onClick={() => openChatAction(i())}
+                            class="h-4 px-2"
+                          >
+                            <img
+                              src={moreHorizontalIcon}
+                              class="w-3"
+                              alt="action icon"
+                            />
                           </button>
                           <Show when={actionIndex() === i()}>
                             <OutsideClickHandler
                               onOutsideClick={() => setActionIndex(null)}
                             >
                               <ul
-                                class={`absolute z-10 w-32 rounded-md border-2 border-[#BDBDBD] bg-white ${
+                                class={`absolute top-4 z-10 w-32 rounded-md border-2 border-[#BDBDBD] bg-white ${
                                   message.user.name !== CURRENT_USER &&
                                   "right-0"
                                 }`}
@@ -213,7 +247,7 @@ export default function InboxDialog(props: InboxDialogProps) {
                           </Show>
                         </div>
                         <div
-                          class="rounded-md p-2.5"
+                          class="max-w-lg rounded-md p-2.5"
                           style={{
                             "background-color":
                               numberOfParticipants() > 2

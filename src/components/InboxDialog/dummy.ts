@@ -41,7 +41,7 @@ export const DUMMY_INBOX: TInbox[] = [
         name: "Cameron Phillips",
       },
       content: "Please check this out!",
-      is_unread: true,
+      is_unread: false,
       date: 1641039000,
     },
   },
@@ -95,10 +95,10 @@ export const DUMMY_INBOX: TInbox[] = [
     subject: "FastVisa Support",
     participants: [
       {
-        name: "FastVisa Support",
+        name: "Claren",
       },
       {
-        name: "Claren",
+        name: "FastVisa Support",
       },
     ],
     latest_message: {
@@ -106,7 +106,7 @@ export const DUMMY_INBOX: TInbox[] = [
         name: "FastVisa Support",
       },
       content: "Hey there! Welcome to your inbox.",
-      is_unread: false,
+      is_unread: true,
       date: 1622524740,
     },
   },

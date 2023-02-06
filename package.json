@@ -1,5 +1,6 @@
 {
-  "name": "quicks",
+  "name": "simple-quicks",
+  "author": "Fitrahtur Rahman <fitrahtur@gmail.com> (https://vyonizr.com/)",
   "scripts": {
     "dev": "solid-start dev",
     "build": "solid-start build",
