@@ -1,11 +1,7 @@
-import netlify from "solid-start-netlify";
-import solid from "solid-start/vite";
 import { defineConfig } from "vite";
+import solid from "solid-start/vite";
+import vercel from "solid-start-vercel";
 
 export default defineConfig({
-  plugins: [
-    solid({
-      adapter: netlify({ edge: true }),
-    }),
-  ],
+  plugins: [solid({ adapter: vercel({ edge: true }) })],
 });
