@@ -1,14 +1,14 @@
-import { createSignal, Show, For, createEffect } from 'solid-js'
-import CircularButton from '../components/CircularButton'
-import InboxDialog from "../components/InboxDialog";
-import { OutsideClickHandler } from "solid-outside-click-handler";
+import { createSignal, Show, For } from "solid-js";
+import CircularButton from "~/components/CircularButton";
+import InboxDialog from "~/components/InboxDialog";
+import TodoDialog from "~/components/TodoDialog";
 
 type TMenuButton = {
-  name: string
-  color: string
-  iconURL: string
-  activeIconURL: string
-}
+  name: string;
+  color: string;
+  iconURL: string;
+  activeIconURL: string;
+};
 
 const MENU_BUTTONS: TMenuButton[] = [
   {
@@ -18,7 +18,7 @@ const MENU_BUTTONS: TMenuButton[] = [
     activeIconURL: "/assets/icons/inbox_solid_white.svg",
   },
   {
-    name: "Task",
+    name: "Todo",
     color: "#F8B76B",
     iconURL: "/assets/icons/task.svg",
     activeIconURL: "/assets/icons/task_solid_white.svg",
@@ -26,38 +26,31 @@ const MENU_BUTTONS: TMenuButton[] = [
 ];
 
 export default function Home() {
-  // const [isMenuOpen, setIsMenuOpen] = createSignal(false)
-  // const [activeMenu, setActiveMenu] = createSignal<MenuButton | null>(null)
+  const [isMenuOpen, setIsMenuOpen] = createSignal(false);
+  const [activeMenu, setActiveMenu] = createSignal<TMenuButton | null>(null);
 
-  const [isMenuOpen, setIsMenuOpen] = createSignal(true)
-  const [activeMenu, setActiveMenu] = createSignal<TMenuButton | null>(
-    MENU_BUTTONS[0]
-  )
+  // const [isMenuOpen, setIsMenuOpen] = createSignal(true);
+  // const [activeMenu, setActiveMenu] = createSignal<TMenuButton | null>(
+  //   MENU_BUTTONS[1]
+  // );
 
   const toggleMenuVisibility = () => {
-    setIsMenuOpen(!isMenuOpen())
-  }
-
-  // const renderMenu = (activeMenu: MenuButton | null) => {
-  //   if (activeMenu) {
-  //     if (activeMenu.name === 'Inbox') {
-  //       return (
-  //         <div class='bg-primaryConcrete h-[45.875rem] w-[45.875rem] mb-4 rounded-md'></div>
-  //       )
-  //     }
-  //   }
-  // }
+    setIsMenuOpen(!isMenuOpen());
+  };
 
   const closeMenu = () => {
-    setIsMenuOpen(false)
-    setActiveMenu(null)
-  }
+    setIsMenuOpen(false);
+    setActiveMenu(null);
+  };
 
   return (
     <section>
       <div class="fixed bottom-9 right-9 flex flex-col items-end">
         <Show when={activeMenu()?.name === "Inbox"}>
           <InboxDialog onClose={closeMenu} />
+        </Show>
+        <Show when={activeMenu()?.name === "Todo"}>
+          <TodoDialog onClose={closeMenu} />
         </Show>
         {/* <OutsideClickHandler onOutsideClick={closeMenu}> */}
         <ul class="flex flex-row-reverse space-x-7 space-x-reverse">
